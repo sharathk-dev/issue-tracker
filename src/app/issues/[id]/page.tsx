@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight, ArrowLeft, Pencil } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Separator } from '@/components/ui/separator';
+import { DeleteIssueButton } from './_components/delete-issue-button';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -58,7 +59,7 @@ export default async function IssueDetailPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      {/* Header with Back Button and Edit */}
+      {/* Header with Back Button and Actions */}
       <div className="flex items-center justify-between mb-6">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/issues">
@@ -66,12 +67,15 @@ export default async function IssueDetailPage({ params }: PageProps) {
             Back to Issues
           </Link>
         </Button>
-        <Button variant="outline" size="sm" asChild>
-          <Link href={`/issues/${issue.id}/edit`}>
-            <Pencil className="h-4 w-4 mr-2" />
-            Edit
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/issues/${issue.id}/edit`}>
+              <Pencil className="h-4 w-4 mr-2" />
+              Edit
+            </Link>
+          </Button>
+          <DeleteIssueButton issueId={issue.id} issueTitle={issue.title} />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
