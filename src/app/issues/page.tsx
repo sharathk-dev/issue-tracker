@@ -2,9 +2,10 @@ import { prisma } from '@/lib/db';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight, Plus } from 'lucide-react';
 import { IssueActionsMenu } from './_components/issue-actions-menu';
 
 const statusColors = {
@@ -33,9 +34,17 @@ export default async function IssuesPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Issues</h1>
-        <p className="text-muted-foreground mt-2">View and manage all issues</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Issues</h1>
+          <p className="text-muted-foreground mt-2">View and manage all issues</p>
+        </div>
+        <Button asChild>
+          <Link href="/issues/new">
+            <Plus className="h-4 w-4 mr-2" />
+            New Issue
+          </Link>
+        </Button>
       </div>
 
       {/* Mobile Card View */}
