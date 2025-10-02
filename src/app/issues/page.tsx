@@ -62,10 +62,7 @@ export default async function IssuesPage() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium break-words">{issue.title}</h3>
-                      <Icon className={`h-4 w-4 ${color} flex-shrink-0`} />
-                    </div>
+                    <h3 className="font-medium break-words mb-1">{issue.title}</h3>
                     <div className="flex items-center gap-2 text-sm">
                       <Badge className={statusColors[issue.status]} variant="secondary">
                         {issue.status.replace('_', ' ')}
@@ -75,6 +72,7 @@ export default async function IssuesPage() {
                       </span>
                     </div>
                   </div>
+                  <Icon className={`h-4 w-4 ${color} flex-shrink-0 mt-1`} />
                 </div>
               </Link>
             );
