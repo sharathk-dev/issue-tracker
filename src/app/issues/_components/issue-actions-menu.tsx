@@ -21,8 +21,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { MoreVertical, Pencil, Trash2, Copy } from 'lucide-react';
 import { deleteIssue } from '../[id]/actions';
+import { cloneIssue } from '../[id]/clone/actions';
 
 type IssueActionsMenuProps = {
   issueId: number;
@@ -33,6 +34,7 @@ export function IssueActionsMenu({ issueId, issueTitle }: IssueActionsMenuProps)
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCloning, setIsCloning] = useState(false);
 
   async function handleDelete() {
     setIsDeleting(true);
@@ -51,11 +53,28 @@ export function IssueActionsMenu({ issueId, issueTitle }: IssueActionsMenuProps)
     }
   }
 
+  async function handleClone() {
+    setIsCloning(true);
+
+    try {
+      const result = await cloneIssue(issueId);
+
+      if (result.success && result.issueId) {
+        router.push(`/issues/${result.issueId}/edit`);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Failed to clone issue:', error);
+    } finally {
+      setIsCloning(false);
+    }
+  }
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" disabled={isCloning}>
             <MoreVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -65,6 +84,16 @@ export function IssueActionsMenu({ issueId, issueTitle }: IssueActionsMenuProps)
               <Pencil className="h-4 w-4 mr-2" />
               Edit
             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClone();
+            }}
+            disabled={isCloning}
+          >
+            <Copy className="h-4 w-4 mr-2" />
+            {isCloning ? 'Cloning...' : 'Clone'}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
