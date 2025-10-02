@@ -124,9 +124,7 @@ export default async function IssuesPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              issues.map(issue => {
-                const { icon: Icon, color, className } = priorityIcons[issue.priority];
-                return (
+              issues.map(issue => (
                   <TableRow key={issue.id} className="cursor-pointer hover:bg-muted/50 transition-colors">
                     <TableCell>
                       <Link
@@ -156,8 +154,7 @@ export default async function IssuesPage() {
                       <IssueActionsMenu issueId={issue.id} issueTitle={issue.title} />
                     </TableCell>
                   </TableRow>
-                );
-              })
+              ))
             )}
           </TableBody>
         </Table>
