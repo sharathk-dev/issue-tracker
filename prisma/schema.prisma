@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// models
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  image String?
+
+  issues   Issue[]
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Issue {
+  id          Int           @id @default(autoincrement())
+  title       String        @db.VarChar(255)
+  description String?       @db.Text
+  status      IssueStatus   @default(OPEN)
+  priority    IssuePriority @default(MEDIUM)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  assigneeId Int?
+
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@map("issues")
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  content String @db.Text
+
+  issueId Int
+  issue   Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([issueId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+// Enums
+enum IssueStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum IssuePriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
