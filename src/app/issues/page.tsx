@@ -10,6 +10,7 @@ import { IssueActionsMenu } from './_components/issue-actions-menu';
 import { InlineStatusSelect } from './_components/inline-status-select';
 import { InlinePrioritySelect } from './_components/inline-priority-select';
 import { InlineAssigneeSelect } from './_components/inline-assignee-select';
+import { SortableHeader } from './_components/sortable-header';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -24,16 +25,47 @@ const priorityIcons = {
   URGENT: { icon: ChevronsUp, color: 'text-red-500', className: 'h-5 w-5' },
 };
 
-export default async function IssuesPage() {
+type IssuesPageProps = {
+  searchParams: Promise<{
+    sortBy?: string;
+    order?: string;
+  }>;
+};
+
+export default async function IssuesPage({ searchParams }: IssuesPageProps) {
+  const { sortBy, order } = await searchParams;
+
+  // Build orderBy clause based on sort params
+  let orderBy: any = { createdAt: 'desc' }; // default
+
+  if (sortBy) {
+    const orderDirection = order === 'desc' ? 'desc' : 'asc';
+
+    switch (sortBy) {
+      case 'title':
+        orderBy = { title: orderDirection };
+        break;
+      case 'status':
+        orderBy = { status: orderDirection };
+        break;
+      case 'priority':
+        orderBy = { priority: orderDirection };
+        break;
+      case 'createdAt':
+        orderBy = { createdAt: orderDirection };
+        break;
+      default:
+        orderBy = { createdAt: 'desc' };
+    }
+  }
+
   const [issues, users] = await Promise.all([
     prisma.issue.findMany({
       include: {
         author: true,
         assignee: true,
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy,
     }),
     prisma.user.findMany({
       select: {
@@ -108,11 +140,11 @@ export default async function IssuesPage() {
         <Table>
           <TableHeader>
             <TableRow className="bg-primary/5 hover:bg-primary/5 border-b-2 border-primary/20">
-              <TableHead className="font-semibold text-foreground">Title</TableHead>
-              <TableHead className="font-semibold text-foreground">Status</TableHead>
-              <TableHead className="font-semibold text-foreground">Priority</TableHead>
+              <SortableHeader column="title" label="Title" />
+              <SortableHeader column="status" label="Status" />
+              <SortableHeader column="priority" label="Priority" />
               <TableHead className="font-semibold text-foreground">Assigned To</TableHead>
-              <TableHead className="font-semibold text-foreground">Created</TableHead>
+              <SortableHeader column="createdAt" label="Created" />
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
