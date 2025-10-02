@@ -7,6 +7,9 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight, Plus } from 'lucide-react';
 import { IssueActionsMenu } from './_components/issue-actions-menu';
+import { InlineStatusSelect } from './_components/inline-status-select';
+import { InlinePrioritySelect } from './_components/inline-priority-select';
+import { InlineAssigneeSelect } from './_components/inline-assignee-select';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -22,15 +25,25 @@ const priorityIcons = {
 };
 
 export default async function IssuesPage() {
-  const issues = await prisma.issue.findMany({
-    include: {
-      author: true,
-      assignee: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
+  const [issues, users] = await Promise.all([
+    prisma.issue.findMany({
+      include: {
+        author: true,
+        assignee: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    }),
+    prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+      },
+    }),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
@@ -124,29 +137,17 @@ export default async function IssuesPage() {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Badge className={statusColors[issue.status]} variant="secondary">
-                        {issue.status.replace('_', ' ')}
-                      </Badge>
+                      <InlineStatusSelect issueId={issue.id} currentStatus={issue.status} />
                     </TableCell>
                     <TableCell>
-                      <Icon className={`${className} ${color}`} />
+                      <InlinePrioritySelect issueId={issue.id} currentPriority={issue.priority} />
                     </TableCell>
                     <TableCell>
-                      {issue.assignee ? (
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-6 w-6">
-                            <AvatarImage src={issue.assignee.image || undefined} />
-                            <AvatarFallback className="text-xs">
-                              {issue.assignee.name?.[0] || issue.assignee.email[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-muted-foreground">
-                            {issue.assignee.name || issue.assignee.email}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground italic">Unassigned</span>
-                      )}
+                      <InlineAssigneeSelect
+                        issueId={issue.id}
+                        currentAssignee={issue.assignee}
+                        users={users}
+                      />
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
