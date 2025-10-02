@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Database
+/mysql_data
+
+# Docker
+docker-compose.override.yml
