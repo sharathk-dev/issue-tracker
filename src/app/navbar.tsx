@@ -12,7 +12,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   const links = [
-    { href: '/', label: 'Dashboard' },
+    { href: '/dashboard', label: 'Dashboard' },
     { href: '/issues', label: 'Issues' },
   ];
 
