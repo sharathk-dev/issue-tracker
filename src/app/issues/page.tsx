@@ -23,6 +23,7 @@ export default async function IssuesPage() {
   const issues = await prisma.issue.findMany({
     include: {
       author: true,
+      assignee: true,
     },
     orderBy: {
       createdAt: 'desc',
@@ -50,10 +51,16 @@ export default async function IssuesPage() {
                 className="block rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-start gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={issue.author.image || undefined} />
-                    <AvatarFallback>{issue.author.name?.[0] || issue.author.email[0]}</AvatarFallback>
-                  </Avatar>
+                  {issue.assignee ? (
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={issue.assignee.image || undefined} />
+                      <AvatarFallback>{issue.assignee.name?.[0] || issue.assignee.email[0]}</AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                      ?
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-medium break-words">{issue.title}</h3>
@@ -83,7 +90,7 @@ export default async function IssuesPage() {
               <TableHead className="font-semibold text-foreground">Title</TableHead>
               <TableHead className="font-semibold text-foreground">Status</TableHead>
               <TableHead className="font-semibold text-foreground">Priority</TableHead>
-              <TableHead className="font-semibold text-foreground">Author</TableHead>
+              <TableHead className="font-semibold text-foreground">Assigned To</TableHead>
               <TableHead className="font-semibold text-foreground">Created</TableHead>
             </TableRow>
           </TableHeader>
@@ -116,17 +123,21 @@ export default async function IssuesPage() {
                       <Icon className={`${className} ${color}`} />
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-6 w-6">
-                          <AvatarImage src={issue.author.image || undefined} />
-                          <AvatarFallback className="text-xs">
-                            {issue.author.name?.[0] || issue.author.email[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-muted-foreground">
-                          {issue.author.name || issue.author.email}
-                        </span>
-                      </div>
+                      {issue.assignee ? (
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-6 w-6">
+                            <AvatarImage src={issue.assignee.image || undefined} />
+                            <AvatarFallback className="text-xs">
+                              {issue.assignee.name?.[0] || issue.assignee.email[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-muted-foreground">
+                            {issue.assignee.name || issue.assignee.email}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground italic">Unassigned</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
