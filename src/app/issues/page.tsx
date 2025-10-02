@@ -38,12 +38,12 @@ export default async function IssuesPage() {
       <div className="rounded-lg border bg-card">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Priority</TableHead>
-              <TableHead>Author</TableHead>
-              <TableHead>Created</TableHead>
+            <TableRow className="bg-primary/5 hover:bg-primary/5 border-b-2 border-primary/20">
+              <TableHead className="font-semibold text-foreground">Title</TableHead>
+              <TableHead className="font-semibold text-foreground">Status</TableHead>
+              <TableHead className="font-semibold text-foreground">Priority</TableHead>
+              <TableHead className="font-semibold text-foreground">Author</TableHead>
+              <TableHead className="font-semibold text-foreground">Created</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -55,9 +55,12 @@ export default async function IssuesPage() {
               </TableRow>
             ) : (
               issues.map(issue => (
-                <TableRow key={issue.id} className="cursor-pointer hover:bg-muted/50">
+                <TableRow key={issue.id} className="cursor-pointer hover:bg-muted/50 transition-colors">
                   <TableCell>
-                    <Link href={`/issues/${issue.id}`} className="font-medium hover:text-primary">
+                    <Link
+                      href={`/issues/${issue.id}`}
+                      className="hover:text-primary hover:underline decoration-dotted underline-offset-4"
+                    >
                       {issue.title}
                     </Link>
                   </TableCell>
