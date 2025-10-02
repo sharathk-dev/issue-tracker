@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight, ArrowLeft, Pencil } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Separator } from '@/components/ui/separator';
 
@@ -56,6 +58,22 @@ export default async function IssueDetailPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
+      {/* Header with Back Button and Edit */}
+      <div className="flex items-center justify-between mb-6">
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/issues">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Issues
+          </Link>
+        </Button>
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/issues/${issue.id}/edit`}>
+            <Pencil className="h-4 w-4 mr-2" />
+            Edit
+          </Link>
+        </Button>
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">

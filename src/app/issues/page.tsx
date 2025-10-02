@@ -43,7 +43,7 @@ export default async function IssuesPage() {
           <div className="text-center text-muted-foreground py-8">No issues found</div>
         ) : (
           issues.map(issue => {
-            const { icon: Icon, color, className } = priorityIcons[issue.priority];
+            const { icon: Icon, color } = priorityIcons[issue.priority];
             return (
               <Link
                 key={issue.id}
