@@ -75,7 +75,7 @@ async function main() {
     },
   });
 
-  const issue4 = await prisma.issue.create({
+  await prisma.issue.create({
     data: {
       title: 'Update documentation for API endpoints',
       description: 'API documentation is outdated. Need to document the new comment endpoints.',
@@ -85,7 +85,7 @@ async function main() {
     },
   });
 
-  const issue5 = await prisma.issue.create({
+  await prisma.issue.create({
     data: {
       title: 'Implement email notifications',
       description: 'Send email notifications when issues are assigned or commented on.',

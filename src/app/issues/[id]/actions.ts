@@ -13,7 +13,7 @@ export async function deleteIssue(issueId: number) {
     revalidatePath('/dashboard');
 
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { error: 'Failed to delete issue' };
   }
 }

@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight } from 'lucide-react';
+import { IssueActionsMenu } from './_components/issue-actions-menu';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -90,12 +91,13 @@ export default async function IssuesPage() {
               <TableHead className="font-semibold text-foreground">Priority</TableHead>
               <TableHead className="font-semibold text-foreground">Assigned To</TableHead>
               <TableHead className="font-semibold text-foreground">Created</TableHead>
+              <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {issues.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                   No issues found
                 </TableCell>
               </TableRow>
@@ -139,6 +141,9 @@ export default async function IssuesPage() {
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
+                    </TableCell>
+                    <TableCell>
+                      <IssueActionsMenu issueId={issue.id} issueTitle={issue.title} />
                     </TableCell>
                   </TableRow>
                 );

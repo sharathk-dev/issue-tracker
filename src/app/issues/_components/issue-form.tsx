@@ -59,7 +59,7 @@ export function IssueForm({ users, issue, onSubmit }: IssueFormProps) {
         }
         router.refresh();
       }
-    } catch (err) {
+    } catch (_err) {
       setError(`Failed to ${isEditMode ? 'update' : 'create'} issue`);
     } finally {
       setIsSubmitting(false);
