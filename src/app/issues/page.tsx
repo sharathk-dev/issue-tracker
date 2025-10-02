@@ -11,6 +11,7 @@ import { InlineStatusSelect } from './_components/inline-status-select';
 import { InlinePrioritySelect } from './_components/inline-priority-select';
 import { InlineAssigneeSelect } from './_components/inline-assignee-select';
 import { SortableHeader } from './_components/sortable-header';
+import { IssueFilters } from './_components/issue-filters';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -29,11 +30,15 @@ type IssuesPageProps = {
   searchParams: Promise<{
     sortBy?: string;
     order?: string;
+    search?: string;
+    status?: string;
+    priority?: string;
+    assignee?: string;
   }>;
 };
 
 export default async function IssuesPage({ searchParams }: IssuesPageProps) {
-  const { sortBy, order } = await searchParams;
+  const { sortBy, order, search, status, priority, assignee } = await searchParams;
 
   // Build orderBy clause based on sort params
   let orderBy: any = { createdAt: 'desc' }; // default
@@ -59,8 +64,34 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
     }
   }
 
+  // Build where clause based on filters
+  const where: any = {};
+
+  if (search) {
+    where.title = {
+      contains: search,
+    };
+  }
+
+  if (status && status !== 'all') {
+    where.status = status;
+  }
+
+  if (priority && priority !== 'all') {
+    where.priority = priority;
+  }
+
+  if (assignee && assignee !== 'all') {
+    if (assignee === 'unassigned') {
+      where.assigneeId = null;
+    } else {
+      where.assigneeId = parseInt(assignee);
+    }
+  }
+
   const [issues, users] = await Promise.all([
     prisma.issue.findMany({
+      where,
       include: {
         author: true,
         assignee: true,
@@ -91,6 +122,8 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
           </Link>
         </Button>
       </div>
+
+      <IssueFilters users={users} />
 
       {/* Mobile Card View */}
       <div className="md:hidden space-y-4">
