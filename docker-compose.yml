@@ -1,26 +1,25 @@
 services:
   db:
-    image: mysql:8.0
+    image: postgres:16-alpine
     container_name: issue_tracker_db
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: issue_tracker
-      MYSQL_USER: tracker_user
-      MYSQL_PASSWORD: tracker_password
+      POSTGRES_USER: tracker_user
+      POSTGRES_PASSWORD: tracker_password
+      POSTGRES_DB: issue_tracker
     ports:
-      - '3306:3306'
+      - '5432:5432'
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - issue_tracker_network
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-ppassword']
+      test: ['CMD-SHELL', 'pg_isready -U tracker_user -d issue_tracker']
       interval: 10s
       timeout: 5s
       retries: 5
 
 volumes:
-  mysql_data:
+  postgres_data:
     driver: local
 
 networks:
