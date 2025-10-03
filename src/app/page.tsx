@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { CheckCircle2, Clock, Users, Zap } from 'lucide-react';
 import { Hero } from './hero';
 import { Pricing } from './pricing';
+import { Testimonials } from './testimonials';
 
 export default function HomePage() {
   const features = [
@@ -62,6 +63,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <Testimonials />
 
       <Pricing />
     </>
