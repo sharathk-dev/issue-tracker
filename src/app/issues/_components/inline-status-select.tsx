@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -9,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { updateIssueStatus } from '../actions';
 
 type Status = 'OPEN' | 'IN_PROGRESS' | 'CLOSED';

@@ -14,8 +14,8 @@ model User {
   name  String?
   image String?
 
-  issues         Issue[] @relation("IssueAuthor")
-  assignedIssues Issue[] @relation("IssueAssignee")
+  issues         Issue[]   @relation("IssueAuthor")
+  assignedIssues Issue[]   @relation("IssueAssignee")
   comments       Comment[]
 
   createdAt DateTime @default(now())

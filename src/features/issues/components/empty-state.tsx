@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { FileQuestion, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FileQuestion, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 interface EmptyStateProps {
   hasFilters?: boolean;

@@ -1,9 +1,9 @@
-import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import type { Comment, Issue, User } from '@prisma/client';
 import { MessageSquare } from 'lucide-react';
-import type { Issue, User, Comment } from '@prisma/client';
+import Link from 'next/link';
 
 interface IssueCardProps {
   issue: Issue & {

@@ -1,13 +1,13 @@
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { prisma } from '@/lib/db';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight, ArrowLeft, Pencil } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { prisma } from '@/lib/db';
+import { formatDistanceToNow } from 'date-fns';
+import { ArrowLeft, ChevronDown, ChevronsLeftRight, ChevronsUp, ChevronUp, Pencil } from 'lucide-react';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { DeleteIssueButton } from './_components/delete-issue-button';
 
 const statusColors = {
@@ -88,7 +88,8 @@ export default async function IssueDetailPage({ params }: PageProps) {
                 <div className="flex-1 min-w-0">
                   <CardTitle className="text-2xl mb-2">{issue.title}</CardTitle>
                   <CardDescription>
-                    #{issue.id} · Created {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })} by{' '}
+                    #{issue.id} · Created{' '}
+                    {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })} by{' '}
                     {issue.author.name || issue.author.email}
                   </CardDescription>
                 </div>
@@ -157,7 +158,9 @@ export default async function IssueDetailPage({ params }: PageProps) {
                 <p className="text-sm font-medium mb-2">Priority</p>
                 <div className="flex items-center gap-2">
                   <PriorityIcon className={`h-4 w-4 ${priorityConfig[issue.priority].color}`} />
-                  <span className="text-sm text-muted-foreground">{priorityConfig[issue.priority].label}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {priorityConfig[issue.priority].label}
+                  </span>
                 </div>
               </div>
 

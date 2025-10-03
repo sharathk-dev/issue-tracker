@@ -1,19 +1,19 @@
-import { prisma } from '@/lib/db';
-import { Prisma, IssueStatus, IssuePriority } from '@prisma/client';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { prisma } from '@/lib/db';
+import { IssuePriority, IssueStatus, Prisma } from '@prisma/client';
 import { formatDistanceToNow } from 'date-fns';
-import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight, Plus } from 'lucide-react';
-import { IssueActionsMenu } from './_components/issue-actions-menu';
-import { InlineStatusSelect } from './_components/inline-status-select';
-import { InlinePrioritySelect } from './_components/inline-priority-select';
+import { ChevronDown, ChevronsLeftRight, ChevronsUp, ChevronUp, Plus } from 'lucide-react';
+import Link from 'next/link';
 import { InlineAssigneeSelect } from './_components/inline-assignee-select';
-import { SortableHeader } from './_components/sortable-header';
+import { InlinePrioritySelect } from './_components/inline-priority-select';
+import { InlineStatusSelect } from './_components/inline-status-select';
+import { IssueActionsMenu } from './_components/issue-actions-menu';
 import { IssueFilters } from './_components/issue-filters';
 import { IssuePagination } from './_components/issue-pagination';
+import { SortableHeader } from './_components/sortable-header';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -201,35 +201,31 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
               </TableRow>
             ) : (
               issues.map(issue => (
-                  <TableRow key={issue.id} className="cursor-pointer hover:bg-muted/50 transition-colors">
-                    <TableCell>
-                      <Link
-                        href={`/issues/${issue.id}`}
-                        className="hover:text-primary hover:underline decoration-dotted underline-offset-4"
-                      >
-                        {issue.title}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <InlineStatusSelect issueId={issue.id} currentStatus={issue.status} />
-                    </TableCell>
-                    <TableCell>
-                      <InlinePrioritySelect issueId={issue.id} currentPriority={issue.priority} />
-                    </TableCell>
-                    <TableCell>
-                      <InlineAssigneeSelect
-                        issueId={issue.id}
-                        currentAssignee={issue.assignee}
-                        users={users}
-                      />
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
-                    </TableCell>
-                    <TableCell>
-                      <IssueActionsMenu issueId={issue.id} issueTitle={issue.title} />
-                    </TableCell>
-                  </TableRow>
+                <TableRow key={issue.id} className="cursor-pointer hover:bg-muted/50 transition-colors">
+                  <TableCell>
+                    <Link
+                      href={`/issues/${issue.id}`}
+                      className="hover:text-primary hover:underline decoration-dotted underline-offset-4"
+                    >
+                      {issue.title}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <InlineStatusSelect issueId={issue.id} currentStatus={issue.status} />
+                  </TableCell>
+                  <TableCell>
+                    <InlinePrioritySelect issueId={issue.id} currentPriority={issue.priority} />
+                  </TableCell>
+                  <TableCell>
+                    <InlineAssigneeSelect issueId={issue.id} currentAssignee={issue.assignee} users={users} />
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
+                  </TableCell>
+                  <TableCell>
+                    <IssueActionsMenu issueId={issue.id} issueTitle={issue.title} />
+                  </TableCell>
+                </TableRow>
               ))
             )}
           </TableBody>

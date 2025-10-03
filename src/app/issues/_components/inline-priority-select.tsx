@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Select,
   SelectContent,
@@ -9,7 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight } from 'lucide-react';
+import { ChevronDown, ChevronsLeftRight, ChevronsUp, ChevronUp } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { updateIssuePriority } from '../actions';
 
 type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';

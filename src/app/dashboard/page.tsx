@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import { prisma } from '@/lib/db';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronUp, ChevronDown, ChevronsUp, ChevronsLeftRight, AlertCircle, CheckCircle2, Clock, FolderOpen } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { prisma } from '@/lib/db';
 import { formatDistanceToNow } from 'date-fns';
+import { AlertCircle, CheckCircle2, ChevronDown, ChevronsLeftRight, ChevronsUp, ChevronUp, Clock, FolderOpen } from 'lucide-react';
+import Link from 'next/link';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',

@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { ArrowRight, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ArrowRight, Bug } from 'lucide-react';
+import Link from 'next/link';
 
 export function Hero() {
   return (

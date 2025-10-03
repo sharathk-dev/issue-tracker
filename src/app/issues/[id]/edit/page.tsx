@@ -1,5 +1,5 @@
-import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
 import { IssueForm } from '../../_components/issue-form';
 import { updateIssue } from './actions';
 
