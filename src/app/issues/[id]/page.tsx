@@ -1,30 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { prisma } from '@/lib/db';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeft, ChevronDown, ChevronsLeftRight, ChevronsUp, ChevronUp, Pencil } from 'lucide-react';
+import { ArrowLeft, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DeleteIssueButton } from './_components/delete-issue-button';
 import { InlineStatusSelect } from '../_components/inline-status-select';
 import { InlinePrioritySelect } from '../_components/inline-priority-select';
 import { InlineAssigneeSelect } from '../_components/inline-assignee-select';
-
-const statusColors = {
-  OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
-  IN_PROGRESS: 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20',
-  CLOSED: 'bg-green-500/10 text-green-500 hover:bg-green-500/20',
-};
-
-const priorityConfig = {
-  LOW: { icon: ChevronDown, color: 'text-gray-500', label: 'Low' },
-  MEDIUM: { icon: ChevronsLeftRight, color: 'text-blue-500', label: 'Medium' },
-  HIGH: { icon: ChevronUp, color: 'text-orange-500', label: 'High' },
-  URGENT: { icon: ChevronsUp, color: 'text-red-500', label: 'Urgent' },
-};
+import { CommentForm } from './_components/comment-form';
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -67,8 +54,6 @@ export default async function IssueDetailPage({ params }: PageProps) {
   if (!issue) {
     notFound();
   }
-
-  const PriorityIcon = priorityConfig[issue.priority].icon;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -123,7 +108,11 @@ export default async function IssueDetailPage({ params }: PageProps) {
             <CardHeader>
               <CardTitle>Comments ({issue.comments.length})</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              {/* Comment Form */}
+              <CommentForm issueId={issue.id} />
+
+              {/* Comments List */}
               {issue.comments.length === 0 ? (
                 <p className="text-center text-muted-foreground py-8">No comments yet</p>
               ) : (
@@ -173,11 +162,7 @@ export default async function IssueDetailPage({ params }: PageProps) {
               {/* Assignee */}
               <div>
                 <p className="text-sm font-medium mb-2">Assigned To</p>
-                <InlineAssigneeSelect
-                  issueId={issue.id}
-                  currentAssignee={issue.assignee}
-                  users={users}
-                />
+                <InlineAssigneeSelect issueId={issue.id} currentAssignee={issue.assignee} users={users} />
               </div>
 
               <Separator />

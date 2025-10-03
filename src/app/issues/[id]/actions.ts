@@ -17,3 +17,29 @@ export async function deleteIssue(issueId: number) {
     return { error: 'Failed to delete issue' };
   }
 }
+
+export async function addComment(issueId: number, content: string) {
+  try {
+    // For now, use the first user as the author
+    // In a real app, this would come from the authenticated session
+    const firstUser = await prisma.user.findFirst();
+
+    if (!firstUser) {
+      return { error: 'No user found' };
+    }
+
+    await prisma.comment.create({
+      data: {
+        content,
+        issueId,
+        authorId: firstUser.id,
+      },
+    });
+
+    revalidatePath(`/issues/${issueId}`);
+
+    return { success: true };
+  } catch (_error) {
+    return { error: 'Failed to add comment' };
+  }
+}
