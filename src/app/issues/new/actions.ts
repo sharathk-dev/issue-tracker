@@ -1,5 +1,6 @@
 'use server';
 
+import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -14,6 +15,12 @@ const createIssueSchema = z.object({
 
 export async function createIssue(formData: FormData) {
   try {
+    const session = await auth();
+
+    if (!session?.user?.email) {
+      return { error: 'You must be signed in to create issues' };
+    }
+
     const assigneeIdValue = formData.get('assigneeId');
 
     const data = {
@@ -26,12 +33,12 @@ export async function createIssue(formData: FormData) {
 
     const validated = createIssueSchema.parse(data);
 
-    // TODO: Get the actual logged-in user ID
-    // For now, we'll get the first user from the database
-    const user = await prisma.user.findFirst();
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
 
     if (!user) {
-      return { error: 'No user found. Please create a user first.' };
+      return { error: 'User not found' };
     }
 
     await prisma.issue.create({

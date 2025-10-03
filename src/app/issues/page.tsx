@@ -134,6 +134,12 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
         </Button>
       </div>
 
+      <div className="mb-6 rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-3">
+        <p className="text-sm text-blue-600 dark:text-blue-400">
+          <span className="font-medium">Read-only mode:</span> Browsing is open to everyone. Sign in to create, edit, or manage issues.
+        </p>
+      </div>
+
       <IssueFilters users={users} />
 
       {/* Mobile Card View */}

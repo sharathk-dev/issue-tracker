@@ -1,10 +1,17 @@
 'use server';
 
+import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
 export async function deleteIssue(issueId: number) {
   try {
+    const session = await auth();
+
+    if (!session?.user?.email) {
+      return { error: 'You must be signed in to delete issues' };
+    }
+
     await prisma.issue.delete({
       where: { id: issueId },
     });
@@ -20,19 +27,25 @@ export async function deleteIssue(issueId: number) {
 
 export async function addComment(issueId: number, content: string) {
   try {
-    // For now, use the first user as the author
-    // In a real app, this would come from the authenticated session
-    const firstUser = await prisma.user.findFirst();
+    const session = await auth();
 
-    if (!firstUser) {
-      return { error: 'No user found' };
+    if (!session?.user?.email) {
+      return { error: 'You must be signed in to comment' };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return { error: 'User not found' };
     }
 
     await prisma.comment.create({
       data: {
         content,
         issueId,
-        authorId: firstUser.id,
+        authorId: user.id,
       },
     });
 

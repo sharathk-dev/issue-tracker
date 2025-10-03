@@ -1,5 +1,6 @@
 'use server';
 
+import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -14,6 +15,12 @@ const updateIssueSchema = z.object({
 
 export async function updateIssue(issueId: number, formData: FormData) {
   try {
+    const session = await auth();
+
+    if (!session?.user?.email) {
+      return { error: 'You must be signed in to update issues' };
+    }
+
     const assigneeIdValue = formData.get('assigneeId');
 
     const data = {
