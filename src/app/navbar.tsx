@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { cn } from '@/lib/utils';
 import { Bug, Menu, X } from 'lucide-react';
 import Link from 'next/link';
@@ -45,6 +46,7 @@ export function Navbar() {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex md:items-center md:space-x-4">
+          <ThemeToggle />
           <Button variant="ghost" size="sm">
             Sign In
           </Button>
@@ -74,6 +76,10 @@ export function Navbar() {
               </Link>
             ))}
             <div className="flex flex-col space-y-2 pt-4 border-t">
+              <div className="flex items-center justify-between pb-2">
+                <span className="text-sm font-medium">Theme</span>
+                <ThemeToggle />
+              </div>
               <Button variant="outline" size="sm">
                 Sign In
               </Button>
