@@ -8,12 +8,7 @@ const plans = [
     name: 'Free',
     price: '$0',
     description: 'Perfect for individuals and small projects',
-    features: [
-      'Up to 10 issues',
-      'Basic issue tracking',
-      'Email notifications',
-      'Community support',
-    ],
+    features: ['Up to 10 issues', 'Basic issue tracking', 'Email notifications', 'Community support'],
     cta: 'Get Started',
     featured: false,
   },
@@ -58,7 +53,7 @@ export function Pricing() {
             Simple, transparent pricing
           </h2>
           <p className="text-lg text-muted-foreground">
-            Choose the plan that's right for you. All plans include a 14-day free trial.
+            Choose the plan that&apos;s right for you. All plans include a 14-day free trial.
           </p>
         </div>
 
@@ -80,9 +75,7 @@ export function Pricing() {
                 <CardDescription>{plan.description}</CardDescription>
                 <div className="mt-4">
                   <span className="text-4xl font-bold">{plan.price}</span>
-                  {plan.price !== 'Custom' && (
-                    <span className="text-muted-foreground">/month</span>
-                  )}
+                  {plan.price !== 'Custom' && <span className="text-muted-foreground">/month</span>}
                 </div>
               </CardHeader>
               <CardContent className="flex-1">
@@ -96,12 +89,7 @@ export function Pricing() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button
-                  asChild
-                  className="w-full"
-                  variant={plan.featured ? 'default' : 'outline'}
-                  size="lg"
-                >
+                <Button asChild className="w-full" variant={plan.featured ? 'default' : 'outline'} size="lg">
                   <Link href="/auth/signin">{plan.cta}</Link>
                 </Button>
               </CardFooter>

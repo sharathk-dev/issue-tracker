@@ -94,7 +94,7 @@ export function Testimonials() {
               >
                 <CardContent className="pt-6 flex flex-col h-full">
                   <div className="mb-4 flex-1">
-                    <p className="text-muted-foreground italic">"{testimonial.content}"</p>
+                    <p className="text-muted-foreground italic">&quot;{testimonial.content}&quot;</p>
                   </div>
                   <div className="flex items-center gap-3 mt-auto">
                     <Avatar className="flex-shrink-0">
