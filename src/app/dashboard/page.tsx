@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +21,7 @@ const priorityIcons = {
 };
 
 export default async function DashboardPage() {
+  const session = await auth();
   const [stats, recentIssues] = await Promise.all([
     prisma.issue.groupBy({
       by: ['status'],
@@ -49,11 +51,13 @@ export default async function DashboardPage() {
         <p className="text-muted-foreground mt-2">Overview of all issues and activity</p>
       </div>
 
-      <div className="mb-6 rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-3">
-        <p className="text-sm text-blue-600 dark:text-blue-400">
-          <span className="font-medium">Read-only mode:</span> Browsing is open to everyone. Sign in to create, edit, or manage issues.
-        </p>
-      </div>
+      {!session && (
+        <div className="mb-6 rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-3">
+          <p className="text-sm text-blue-600 dark:text-blue-400">
+            <span className="font-medium">Read-only mode:</span> Browsing is open to everyone. Sign in to create, edit, or manage issues.
+          </p>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">

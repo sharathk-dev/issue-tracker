@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -43,6 +44,7 @@ type IssuesPageProps = {
 const ITEMS_PER_PAGE = 10;
 
 export default async function IssuesPage({ searchParams }: IssuesPageProps) {
+  const session = await auth();
   const { sortBy, order, search, status, priority, assignee, page } = await searchParams;
   const currentPage = parseInt(page || '1');
 
@@ -134,11 +136,13 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
         </Button>
       </div>
 
-      <div className="mb-6 rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-3">
-        <p className="text-sm text-blue-600 dark:text-blue-400">
-          <span className="font-medium">Read-only mode:</span> Browsing is open to everyone. Sign in to create, edit, or manage issues.
-        </p>
-      </div>
+      {!session && (
+        <div className="mb-6 rounded-lg border border-blue-500/20 bg-blue-500/5 px-4 py-3">
+          <p className="text-sm text-blue-600 dark:text-blue-400">
+            <span className="font-medium">Read-only mode:</span> Browsing is open to everyone. Sign in to create, edit, or manage issues.
+          </p>
+        </div>
+      )}
 
       <IssueFilters users={users} />
 
