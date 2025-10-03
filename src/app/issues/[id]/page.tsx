@@ -9,6 +9,9 @@ import { ArrowLeft, ChevronDown, ChevronsLeftRight, ChevronsUp, ChevronUp, Penci
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DeleteIssueButton } from './_components/delete-issue-button';
+import { InlineStatusSelect } from '../_components/inline-status-select';
+import { InlinePrioritySelect } from '../_components/inline-priority-select';
+import { InlineAssigneeSelect } from '../_components/inline-assignee-select';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -35,21 +38,31 @@ export default async function IssueDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const issue = await prisma.issue.findUnique({
-    where: { id: issueId },
-    include: {
-      author: true,
-      assignee: true,
-      comments: {
-        include: {
-          author: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
+  const [issue, users] = await Promise.all([
+    prisma.issue.findUnique({
+      where: { id: issueId },
+      include: {
+        author: true,
+        assignee: true,
+        comments: {
+          include: {
+            author: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+      },
+    }),
+  ]);
 
   if (!issue) {
     notFound();
@@ -93,11 +106,7 @@ export default async function IssueDetailPage({ params }: PageProps) {
                     {issue.author.name || issue.author.email}
                   </CardDescription>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={statusColors[issue.status]} variant="secondary">
-                    {issue.status.replace('_', ' ')}
-                  </Badge>
-                </div>
+                <InlineStatusSelect issueId={issue.id} currentStatus={issue.status} />
               </div>
             </CardHeader>
             {issue.description && (
@@ -156,12 +165,7 @@ export default async function IssueDetailPage({ params }: PageProps) {
               {/* Priority */}
               <div>
                 <p className="text-sm font-medium mb-2">Priority</p>
-                <div className="flex items-center gap-2">
-                  <PriorityIcon className={`h-4 w-4 ${priorityConfig[issue.priority].color}`} />
-                  <span className="text-sm text-muted-foreground">
-                    {priorityConfig[issue.priority].label}
-                  </span>
-                </div>
+                <InlinePrioritySelect issueId={issue.id} currentPriority={issue.priority} />
               </div>
 
               <Separator />
@@ -169,21 +173,11 @@ export default async function IssueDetailPage({ params }: PageProps) {
               {/* Assignee */}
               <div>
                 <p className="text-sm font-medium mb-2">Assigned To</p>
-                {issue.assignee ? (
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={issue.assignee.image || undefined} />
-                      <AvatarFallback className="text-xs">
-                        {issue.assignee.name?.[0] || issue.assignee.email[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm text-muted-foreground">
-                      {issue.assignee.name || issue.assignee.email}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-sm text-muted-foreground italic">Unassigned</span>
-                )}
+                <InlineAssigneeSelect
+                  issueId={issue.id}
+                  currentAssignee={issue.assignee}
+                  users={users}
+                />
               </div>
 
               <Separator />
