@@ -220,6 +220,11 @@ export function IssueFilters({ users }: IssueFiltersProps) {
               </Select>
             </div>
           </div>
+          <div className="mt-4 flex justify-end">
+            <Button size="sm" onClick={() => setIsOpen(false)}>
+              Apply
+            </Button>
+          </div>
         </div>
       )}
     </div>

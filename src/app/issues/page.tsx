@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db';
+import { Prisma, IssueStatus, IssuePriority } from '@prisma/client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,6 +13,7 @@ import { InlinePrioritySelect } from './_components/inline-priority-select';
 import { InlineAssigneeSelect } from './_components/inline-assignee-select';
 import { SortableHeader } from './_components/sortable-header';
 import { IssueFilters } from './_components/issue-filters';
+import { IssuePagination } from './_components/issue-pagination';
 
 const statusColors = {
   OPEN: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20',
@@ -34,14 +36,18 @@ type IssuesPageProps = {
     status?: string;
     priority?: string;
     assignee?: string;
+    page?: string;
   }>;
 };
 
+const ITEMS_PER_PAGE = 10;
+
 export default async function IssuesPage({ searchParams }: IssuesPageProps) {
-  const { sortBy, order, search, status, priority, assignee } = await searchParams;
+  const { sortBy, order, search, status, priority, assignee, page } = await searchParams;
+  const currentPage = parseInt(page || '1');
 
   // Build orderBy clause based on sort params
-  let orderBy: any = { createdAt: 'desc' }; // default
+  let orderBy: Prisma.IssueOrderByWithRelationInput = { createdAt: 'desc' };
 
   if (sortBy) {
     const orderDirection = order === 'desc' ? 'desc' : 'asc';
@@ -65,7 +71,7 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
   }
 
   // Build where clause based on filters
-  const where: any = {};
+  const where: Prisma.IssueWhereInput = {};
 
   if (search) {
     where.title = {
@@ -74,11 +80,11 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
   }
 
   if (status && status !== 'all') {
-    where.status = status;
+    where.status = status as IssueStatus;
   }
 
   if (priority && priority !== 'all') {
-    where.priority = priority;
+    where.priority = priority as IssuePriority;
   }
 
   if (assignee && assignee !== 'all') {
@@ -89,7 +95,7 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
     }
   }
 
-  const [issues, users] = await Promise.all([
+  const [issues, totalCount, users] = await Promise.all([
     prisma.issue.findMany({
       where,
       include: {
@@ -97,7 +103,10 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
         assignee: true,
       },
       orderBy,
+      skip: (currentPage - 1) * ITEMS_PER_PAGE,
+      take: ITEMS_PER_PAGE,
     }),
+    prisma.issue.count({ where }),
     prisma.user.findMany({
       select: {
         id: true,
@@ -107,6 +116,8 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
       },
     }),
   ]);
+
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
@@ -223,6 +234,7 @@ export default async function IssuesPage({ searchParams }: IssuesPageProps) {
             )}
           </TableBody>
         </Table>
+        <IssuePagination currentPage={currentPage} totalPages={totalPages} />
       </div>
     </div>
   );
