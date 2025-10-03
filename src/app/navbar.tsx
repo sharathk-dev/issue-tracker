@@ -7,15 +7,23 @@ import { Bug, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
 
-export function Navbar() {
+type NavbarProps = {
+  session: Session | null;
+};
+
+export function Navbar({ session }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const links = [
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/issues', label: 'Issues' },
-  ];
+  const links = session
+    ? [
+        { href: '/dashboard', label: 'Dashboard' },
+        { href: '/issues', label: 'Issues' },
+      ]
+    : [];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -47,10 +55,18 @@ export function Navbar() {
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex md:items-center md:space-x-4">
           <ThemeToggle />
-          <Button variant="ghost" size="sm">
-            Sign In
-          </Button>
-          <Button size="sm">Get Started</Button>
+          {session ? (
+            <>
+              <span className="text-sm text-muted-foreground">{session.user?.email}</span>
+              <Button variant="ghost" size="sm" onClick={() => signOut({ redirectTo: '/' })}>
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <Button size="sm" asChild>
+              <Link href="/auth/signin">Sign In</Link>
+            </Button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -80,10 +96,18 @@ export function Navbar() {
                 <span className="text-sm font-medium">Theme</span>
                 <ThemeToggle />
               </div>
-              <Button variant="outline" size="sm">
-                Sign In
-              </Button>
-              <Button size="sm">Get Started</Button>
+              {session ? (
+                <>
+                  <div className="text-sm text-muted-foreground pb-2">{session.user?.email}</div>
+                  <Button variant="outline" size="sm" onClick={() => signOut({ redirectTo: '/' })}>
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button size="sm" asChild>
+                  <Link href="/auth/signin">Sign In</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>

@@ -25,13 +25,13 @@ export function Hero() {
 
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Button size="lg" asChild className="w-full sm:w-auto">
-              <Link href="/issues">
-                View Issues
+              <Link href="/auth/signin">
+                Get Started
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="w-full sm:w-auto">
-              <Link href="/issues/new">Create Issue</Link>
+              <Link href="/auth/signin">Sign In</Link>
             </Button>
           </div>
         </div>
