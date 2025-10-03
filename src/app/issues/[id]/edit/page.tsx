@@ -1,5 +1,6 @@
+import { auth } from '@/auth';
 import { prisma } from '@/lib/db';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { IssueForm } from '../../_components/issue-form';
 import { updateIssue } from './actions';
 
@@ -8,6 +9,12 @@ type PageProps = {
 };
 
 export default async function EditIssuePage({ params }: PageProps) {
+  const session = await auth();
+
+  if (!session) {
+    redirect('/auth/signin');
+  }
+
   const { id } = await params;
   const issueId = parseInt(id);
 
